@@ -1,4 +1,4 @@
-package ro.msg.learning.shop.Domain;
+package ro.msg.learning.shop.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

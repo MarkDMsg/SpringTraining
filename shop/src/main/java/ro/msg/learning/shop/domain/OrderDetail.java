@@ -1,10 +1,10 @@
-package ro.msg.learning.shop.Domain;
+package ro.msg.learning.shop.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ro.msg.learning.shop.Domain.Keys.OrderDetailKey;
+import ro.msg.learning.shop.domain.Keys.OrderDetailKey;
 
 @Table(name = "orderdetail")
 @Entity

@@ -1,9 +1,7 @@
-package ro.msg.learning.shop.Domain;
+package ro.msg.learning.shop.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Embeddable;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 
 @Data
 @Embeddable

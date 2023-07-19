@@ -1,4 +1,4 @@
-package ro.msg.learning.shop.Domain.Keys;
+package ro.msg.learning.shop.domain.Keys;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

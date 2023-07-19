@@ -1,26 +1,17 @@
-package ro.msg.learning.shop.Domain;
+package ro.msg.learning.shop.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order extends EntityWithUUID {
-    @ManyToOne
-    @MapsId("costumer")
-    @JoinColumn(name = "id")
-    private Customer customer;
-
-    @Column(name="createdat")
-    @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
-    private LocalDateTime createdAt;
+public class Location extends EntityWithUUID {
+    @Column(name="name")
+    private String name;
 
     @Embedded
     @AttributeOverrides({
