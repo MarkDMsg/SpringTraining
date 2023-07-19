@@ -1,7 +1,7 @@
 CREATE TABLE "order"(
      id UUID NOT NULL,
      customer UUID REFERENCES Customer(id),
-     createdat DATE,
+     createdat TIMESTAMP,
      address_country VARCHAR(30),
      address_city VARCHAR(30),
      address_county VARCHAR(30),
