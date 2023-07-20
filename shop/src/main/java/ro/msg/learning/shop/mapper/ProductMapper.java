@@ -1,18 +1,18 @@
 package ro.msg.learning.shop.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 import ro.msg.learning.shop.domain.Product;
+import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.dto.ProductWithCategoryDto;
 
-@Mapper
-public interface ProductMapper {
-    ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
+@Component
+public class ProductMapper {
+    public ProductWithCategoryDto toProductWithCategoryDto(Product product, ProductCategory productCategory){
+        return new ProductWithCategoryDto(product.getId(),product.getName(),product.getDescription(),product.getPrice(),product.getWeight(),product.getSupplier(),product.getImageUrl(),productCategory.getId(),productCategory.getName(),productCategory.getDescription());
+    }
 
-    @Mapping(target = "id", ignore = true)
-    Product toEntity(ProductWithCategoryDto dogSimple);
-
-    ProductWithCategoryDto toDTO(Product product);
-
+    public Product toProduct(ProductWithCategoryDto productWithCategoryDto){
+        ProductCategory productCategory=new ProductCategory(productWithCategoryDto.getName(),productWithCategoryDto.getCategoryDescription());
+        return new Product(productWithCategoryDto.getName(),productWithCategoryDto.getDescription(),productWithCategoryDto.getPrice(),productWithCategoryDto.getWeight(),productCategory,productWithCategoryDto.getSupplier(),productWithCategoryDto.getImageUrl());
+    }
 }
