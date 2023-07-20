@@ -50,10 +50,8 @@ public class ProductService {
     }
 
     public void deleteProductById(UUID productId) {
-
-        Optional<Product> product = productRepository.findById(productId);
-        if(product.isPresent()){
-                productRepository.deleteById(product.get().getId());
+        if(verifyProductExistence(productId)){
+                productRepository.deleteById(productId);
         }
 
     }
@@ -69,6 +67,11 @@ public class ProductService {
 
         return productRepository.findAll().stream()
                 .map(element -> productMapper.toProductWithCategoryDto(element,element.getCategory())).collect(Collectors.toList());
+    }
+
+    public boolean verifyProductExistence(UUID id){
+        Optional<Product> product = productRepository.findById(id);
+        return product.isPresent();
     }
 
 }

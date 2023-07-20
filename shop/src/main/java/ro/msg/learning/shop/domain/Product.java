@@ -28,7 +28,6 @@ public class Product extends EntityWithUUID {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "category")
-
     private ProductCategory category;
 
     @Column(name="supplier")
