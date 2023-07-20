@@ -63,14 +63,14 @@ public class OrderDetailService {
 
             return orderWithProductsDto;
         }catch (RuntimeException r){
-            System.out.println(r.toString());
+            System.out.println(r);
             return null;
         }
     }
 
     private Location getBestSingleLocation(List<Pair<Product,Integer>> productsWithQuantities){
         List<Location> bestLocations=stockService.getLocationsWithSufficientProductsQuantities(productsWithQuantities);
-        if(bestLocations.size()==0)
+        if(bestLocations.isEmpty())
             throw new RuntimeException();
         return bestLocations.get(0);
     }
