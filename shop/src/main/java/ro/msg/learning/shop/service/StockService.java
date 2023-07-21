@@ -2,10 +2,14 @@ package ro.msg.learning.shop.service;
 
 import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.Location;
 import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.Stock;
+import ro.msg.learning.shop.dto.LocationDto;
+import ro.msg.learning.shop.dto.StockDto;
 import ro.msg.learning.shop.mapper.OrderMapper;
+import ro.msg.learning.shop.mapper.StockMapper;
 import ro.msg.learning.shop.repository.OrderRepository;
 import ro.msg.learning.shop.repository.StockRepository;
 
@@ -14,10 +18,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class StockService {
 
     @Autowired
     private StockRepository stockRepository;
+
+    @Autowired
+    private StockMapper stockMapper;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private LocationService locationService;
 
     public List<Location> getLocationsWithSufficientProductsQuantities(List<Pair<Product,Integer>>productsAndQuantities){
         boolean verifier;
@@ -57,6 +71,18 @@ public class StockService {
             return true;
         } else
             return false;
+    }
+
+
+    public void createStock(StockDto stockDto){
+        Location location=locationService.getLocationEntityById(stockDto.getLocationId());
+        Product product=productService.getProductEntityById(stockDto.getProductId());
+        Stock stock=stockMapper.toStock(stockDto,product,location);
+        stockRepository.save(stock);
+    }
+
+    public List<StockDto> getAllDtoStocks(){
+        return stockRepository.findAll().stream().map(e->stockMapper.toStockDto(e)).toList();
     }
 
 }

@@ -44,13 +44,13 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductWithCategoryDto> getProductById(@PathVariable("id") UUID id){
-       ProductWithCategoryDto returnedProduct=productService.getProductById(id);
+       ProductWithCategoryDto returnedProduct=productService.getProductDtoById(id);
        return new ResponseEntity<>(returnedProduct,HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<ProductWithCategoryDto>> getAllProducts(){
-        List<ProductWithCategoryDto>  returnedProducts=productService.getAllProducts();
+        List<ProductWithCategoryDto>  returnedProducts=productService.getAllDtoProducts();
         return new ResponseEntity<>(returnedProducts,HttpStatus.OK);
     }
 

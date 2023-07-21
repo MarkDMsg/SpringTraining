@@ -32,6 +32,10 @@ public class ProductService {
         return productMapper.toProductWithCategoryDto(product,productCategory);
     }
 
+    public Product getProductEntityByName(String name){
+        return productRepository.findByName(name);
+    }
+
     public ProductWithCategoryDto updateProduct(UUID productId, String newName, String newDescription, BigDecimal newPrice, Double newWeight, String newSupplier, String newImageUrl, ProductCategory newCategory) {
         Optional<Product> newProduct=productRepository.findById(productId);
         if(newProduct.isPresent()){
@@ -56,17 +60,26 @@ public class ProductService {
 
     }
 
-    public ProductWithCategoryDto getProductById(UUID productId) {
+    public Product getProductEntityById(UUID productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        return product.orElse(null);
+    }
+
+    public ProductWithCategoryDto getProductDtoById(UUID productId) {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
             return productMapper.toProductWithCategoryDto(product.get(),product.get().getCategory());
         }else return null;
     }
 
-    public List<ProductWithCategoryDto> getAllProducts() {
+    public List<ProductWithCategoryDto> getAllDtoProducts() {
 
         return productRepository.findAll().stream()
                 .map(element -> productMapper.toProductWithCategoryDto(element,element.getCategory())).collect(Collectors.toList());
+    }
+
+    public List<Product> getAllEntityProducts(){
+        return productRepository.findAll().stream().toList();
     }
 
     public boolean verifyProductExistence(UUID id){

@@ -12,6 +12,7 @@ import ro.msg.learning.shop.domain.Keys.StockKey;
 @NoArgsConstructor
 public class Stock{
     @EmbeddedId
+    @Id
     private StockKey id;
 
     @ManyToOne

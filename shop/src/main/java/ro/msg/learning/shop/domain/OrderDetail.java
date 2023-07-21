@@ -20,19 +20,19 @@ public class OrderDetail{
     private OrderDetailKey id;
 
     @ManyToOne
-    @MapsId("order")
-    @JoinColumn(name = "order")
+    @MapsId("id")
+    @JoinColumn(name = "\"order\"")
     private Order order;
 
     @ManyToOne
-    @MapsId("products")
+    @MapsId("id")
     @JoinColumn(name = "product")
-    private List<Product> products;
+    private Product product;
 
     @ManyToOne
     @JoinColumn(name="shippedfrom")
     private Location shippedFrom;
 
     @Column(name="quantity")
-    private List<Integer> quantities;
+    private Integer quantity;
 }

@@ -15,11 +15,11 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name="\"order\"")
 public class Order extends EntityWithUUID {
     @ManyToOne
-    @MapsId("costumer")
-    @JoinColumn(name = "id")
-    private UUID customerId;
+    @JoinColumn(name = "customer")
+    private Customer customer;
 
     @Column(name="createdat")
     @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)

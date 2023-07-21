@@ -1,15 +1,17 @@
-package ro.msg.learning.shop.domain;
+package ro.msg.learning.shop.dto;
 
-import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
-public class Address {
+public class LocationDto {
+    private UUID id;
+    private String name;
     private String country;
     private String city;
     private String county;
