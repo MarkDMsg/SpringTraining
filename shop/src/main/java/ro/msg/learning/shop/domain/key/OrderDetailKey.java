@@ -1,4 +1,4 @@
-package ro.msg.learning.shop.domain.Keys;
+package ro.msg.learning.shop.domain.key;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -15,10 +15,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Embeddable
-public class StockKey implements Serializable {
-    @Column(name = "product")
-    private UUID product;
+public class OrderDetailKey implements Serializable {
+    @Column(name = "\"order_id\"")
+    private UUID orderId;
 
-    @Column(name = "location")
-    private UUID location;
+    @Column(name = "product_id")
+    private UUID productId;
 }

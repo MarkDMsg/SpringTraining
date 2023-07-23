@@ -1,6 +1,6 @@
 package ro.msg.learning.shop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.ProductCategory;
@@ -12,33 +12,31 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ProductService {
 
-    int INITIAL_NR_OF_PRODUCTS=0;
+    int INITIAL_NR_OF_PRODUCTS = 0;
 
-    @Autowired
-    private ProductMapper productMapper;
+    private final ProductMapper productMapper;
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
 
     public ProductWithCategoryDto createProduct(String name, String description, BigDecimal price, Double weight, String supplier, String imageUrl, ProductCategory productCategory) {
-        Product product= Product.builder().name(name).description(description).price(price).weight(weight).supplier(supplier).imageUrl(imageUrl).category(productCategory).build();
+        Product product = Product.builder().name(name).description(description).price(price).weight(weight).supplier(supplier).imageUrl(imageUrl).category(productCategory).build();
         productRepository.save(product);
-        return productMapper.toProductWithCategoryDto(product,productCategory);
+        return productMapper.toProductWithCategoryDto(product, productCategory);
     }
 
-    public Product getProductEntityByName(String name){
+    public Product getProductEntityByName(String name) {
         return productRepository.findByName(name);
     }
 
     public ProductWithCategoryDto updateProduct(UUID productId, String newName, String newDescription, BigDecimal newPrice, Double newWeight, String newSupplier, String newImageUrl, ProductCategory newCategory) {
-        Optional<Product> newProduct=productRepository.findById(productId);
-        if(newProduct.isPresent()){
+        Optional<Product> newProduct = productRepository.findById(productId);
+        if (newProduct.isPresent()) {
             newProduct.get().setName(newName);
             newProduct.get().setDescription(newDescription);
             newProduct.get().setPrice(newPrice);
@@ -47,15 +45,14 @@ public class ProductService {
             newProduct.get().setImageUrl(newImageUrl);
             newProduct.get().setCategory(newCategory);
             productRepository.save(newProduct.get());
-            return productMapper.toProductWithCategoryDto(newProduct.get(),newCategory);
-        }
-       else return null;
+            return productMapper.toProductWithCategoryDto(newProduct.get(), newCategory);
+        } else return null;
 
     }
 
     public void deleteProductById(UUID productId) {
-        if(verifyProductExistence(productId)){
-                productRepository.deleteById(productId);
+        if (verifyProductExistence(productId)) {
+            productRepository.deleteById(productId);
         }
 
     }
@@ -67,22 +64,20 @@ public class ProductService {
 
     public ProductWithCategoryDto getProductDtoById(UUID productId) {
         Optional<Product> product = productRepository.findById(productId);
-        if (product.isPresent()) {
-            return productMapper.toProductWithCategoryDto(product.get(),product.get().getCategory());
-        }else return null;
+        return product.map(value -> productMapper.toProductWithCategoryDto(value, value.getCategory())).orElse(null);
     }
 
     public List<ProductWithCategoryDto> getAllDtoProducts() {
 
         return productRepository.findAll().stream()
-                .map(element -> productMapper.toProductWithCategoryDto(element,element.getCategory())).collect(Collectors.toList());
+                .map(element -> productMapper.toProductWithCategoryDto(element, element.getCategory())).toList();
     }
 
-    public List<Product> getAllEntityProducts(){
+    public List<Product> getAllEntityProducts() {
         return productRepository.findAll().stream().toList();
     }
 
-    public boolean verifyProductExistence(UUID id){
+    public boolean verifyProductExistence(UUID id) {
         Optional<Product> product = productRepository.findById(id);
         return product.isPresent();
     }

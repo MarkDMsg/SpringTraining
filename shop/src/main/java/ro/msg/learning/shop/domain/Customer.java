@@ -11,19 +11,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Customer extends EntityWithUUID {
-    @Column(name="firstname")
+    @Column(name = "firstname")
     private String firstName;
 
-    @Column(name="lastname")
+    @Column(name = "lastname")
     private String lastName;
 
-    @Column(name="username")
+    @Column(name = "username")
     private String username;
 
-    @Column(name="password")
+    @Column(name = "password")
     private String password;
 
-    @Column(name="emailaddress")
+    @Column(name = "email_address")
     private String emailAddress;
 
 }

@@ -14,25 +14,25 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product extends EntityWithUUID {
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name="price")
+    @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name="weight")
+    @Column(name = "weight")
     private Double weight;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "category")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "category_id")
     private ProductCategory category;
 
-    @Column(name="supplier")
+    @Column(name = "supplier")
     private String supplier;
 
-    @Column(name="imageurl")
+    @Column(name = "image_url")
     private String imageUrl;
 }

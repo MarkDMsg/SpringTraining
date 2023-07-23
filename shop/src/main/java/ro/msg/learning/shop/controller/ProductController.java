@@ -1,6 +1,6 @@
 package ro.msg.learning.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,26 +14,26 @@ import java.util.UUID;
 
 @RequestMapping("/products")
 @RestController
+@RequiredArgsConstructor
 public class ProductController {
-    @Autowired
-    private ProductService productService;
 
-    @Autowired
-    private ProductCategoryService productCategoryService;
+    private final ProductService productService;
+
+    private final ProductCategoryService productCategoryService;
 
     @PostMapping
-    public ResponseEntity<ProductWithCategoryDto> createProduct(@RequestBody ProductWithCategoryDto productWithCategoryDto){
-        ProductCategory productCategory= new ProductCategory(productWithCategoryDto.getCategoryName(),productWithCategoryDto.getCategoryDescription());
-        productCategoryService.saveProductCategory(productCategory);
-        ProductWithCategoryDto returnedProductWithCategoryDto= productService.createProduct(productWithCategoryDto.getName(),productWithCategoryDto.getDescription(),productWithCategoryDto.getPrice(),productWithCategoryDto.getWeight(),productWithCategoryDto.getSupplier(),productWithCategoryDto.getImageUrl(),productCategory);
-        return  new ResponseEntity<>(returnedProductWithCategoryDto, HttpStatus.CREATED);
+    public ResponseEntity<ProductWithCategoryDto> createProduct(@RequestBody ProductWithCategoryDto productWithCategoryDto) {
+        ProductCategory productCategory = new ProductCategory(productWithCategoryDto.getCategoryName(), productWithCategoryDto.getCategoryDescription());
+        productCategory = productCategoryService.saveProductCategory(productCategory);
+        ProductWithCategoryDto returnedProductWithCategoryDto = productService.createProduct(productWithCategoryDto.getName(), productWithCategoryDto.getDescription(), productWithCategoryDto.getPrice(), productWithCategoryDto.getWeight(), productWithCategoryDto.getSupplier(), productWithCategoryDto.getImageUrl(), productCategory);
+        return new ResponseEntity<>(returnedProductWithCategoryDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductWithCategoryDto> updateProduct(@PathVariable("id") UUID id, @RequestBody ProductWithCategoryDto newProduct){
-        ProductCategory productCategory=new ProductCategory(newProduct.getCategoryName(), newProduct.getCategoryDescription());
-        ProductWithCategoryDto returnedProduct= productService.updateProduct(id,newProduct.getName(),newProduct.getDescription(),newProduct.getPrice(),newProduct.getWeight(),newProduct.getSupplier(),newProduct.getImageUrl(),productCategory);
-        return new ResponseEntity<>(returnedProduct,HttpStatus.OK);
+    public ResponseEntity<ProductWithCategoryDto> updateProduct(@PathVariable("id") UUID id, @RequestBody ProductWithCategoryDto newProduct) {
+        ProductCategory productCategory = new ProductCategory(newProduct.getCategoryName(), newProduct.getCategoryDescription());
+        ProductWithCategoryDto returnedProduct = productService.updateProduct(id, newProduct.getName(), newProduct.getDescription(), newProduct.getPrice(), newProduct.getWeight(), newProduct.getSupplier(), newProduct.getImageUrl(), productCategory);
+        return new ResponseEntity<>(returnedProduct, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -43,15 +43,15 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductWithCategoryDto> getProductById(@PathVariable("id") UUID id){
-       ProductWithCategoryDto returnedProduct=productService.getProductDtoById(id);
-       return new ResponseEntity<>(returnedProduct,HttpStatus.OK);
+    public ResponseEntity<ProductWithCategoryDto> getProductById(@PathVariable("id") UUID id) {
+        ProductWithCategoryDto returnedProduct = productService.getProductDtoById(id);
+        return new ResponseEntity<>(returnedProduct, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductWithCategoryDto>> getAllProducts(){
-        List<ProductWithCategoryDto>  returnedProducts=productService.getAllDtoProducts();
-        return new ResponseEntity<>(returnedProducts,HttpStatus.OK);
+    public ResponseEntity<List<ProductWithCategoryDto>> getAllProducts() {
+        List<ProductWithCategoryDto> returnedProducts = productService.getAllDtoProducts();
+        return new ResponseEntity<>(returnedProducts, HttpStatus.OK);
     }
 
 

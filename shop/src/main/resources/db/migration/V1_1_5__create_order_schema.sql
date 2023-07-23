@@ -1,10 +1,10 @@
 CREATE TABLE "order"(
      id UUID NOT NULL,
-     customer UUID REFERENCES Customer(id),
-     createdat TIMESTAMP,
-     address_country VARCHAR(30),
-     address_city VARCHAR(30),
-     address_county VARCHAR(30),
-     address_streetaddress VARCHAR(30),
+     customer_id UUID REFERENCES customer(id),
+     created_at TIMESTAMP,
+     country VARCHAR(30),
+     city VARCHAR(30),
+     county VARCHAR(30),
+     street_address VARCHAR(30),
      PRIMARY KEY (id)
 );

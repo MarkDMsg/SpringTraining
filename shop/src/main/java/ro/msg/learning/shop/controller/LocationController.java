@@ -1,6 +1,6 @@
 package ro.msg.learning.shop.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,19 +11,20 @@ import java.util.List;
 
 @RequestMapping("/location")
 @RestController
+@RequiredArgsConstructor
 public class LocationController {
 
-    @Autowired
-    private LocationService locationService;
+    private final LocationService locationService;
+
     @PostMapping
-    public ResponseEntity<LocationDto> createLocation(@RequestBody LocationDto locationDto){
-       LocationDto returnedLocationDto=locationService.createLocation(locationDto);
-        return  new ResponseEntity<>(returnedLocationDto, HttpStatus.CREATED);
+    public ResponseEntity<LocationDto> createLocation(@RequestBody LocationDto locationDto) {
+        LocationDto returnedLocationDto = locationService.createLocation(locationDto);
+        return new ResponseEntity<>(returnedLocationDto, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<LocationDto>> getAllLocations(){
-        List<LocationDto>  returnedLocations=locationService.getAllDtoLocations();
-        return new ResponseEntity<>(returnedLocations,HttpStatus.OK);
+    public ResponseEntity<List<LocationDto>> getAllLocations() {
+        List<LocationDto> returnedLocations = locationService.getAllDtoLocations();
+        return new ResponseEntity<>(returnedLocations, HttpStatus.OK);
     }
 }

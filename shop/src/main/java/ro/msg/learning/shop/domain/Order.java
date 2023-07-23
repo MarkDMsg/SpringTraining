@@ -8,29 +8,30 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.List;
 
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="\"order\"")
+@Table(name = "\"order\"")
 public class Order extends EntityWithUUID {
     @ManyToOne
-    @JoinColumn(name = "customer")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(name="createdat")
+    @Column(name = "created_at")
     @Convert(converter = Jsr310JpaConverters.LocalDateTimeConverter.class)
     private LocalDateTime createdAt;
 
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride( name = "country", column = @Column(name = "address_country")),
-            @AttributeOverride( name = "city", column = @Column(name = "address_city")),
-            @AttributeOverride( name = "county", column = @Column(name = "address_county")),
-            @AttributeOverride( name = "streetAddress", column = @Column(name = "address_streetaddress"))
-    })
     private Address address;
+
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OrderDetail> orderDetailList;
 }

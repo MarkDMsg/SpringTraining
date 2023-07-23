@@ -1,11 +1,11 @@
-CREATE TABLE Product (
+CREATE TABLE product (
      id UUID NOT NULL,
-     name VARCHAR(30),
+     name VARCHAR(30) NOT NULL,
      description VARCHAR(30),
-     price numeric,
-     weight float8,
-     category UUID REFERENCES ProductCategory(id),
-     supplier VARCHAR(30),
-     imageurl VARCHAR(30),
+     price NUMERIC,
+     weight FLOAT8,
+     category_id UUID REFERENCES product_category(id),
+     supplier VARCHAR(30) NOT NULL,
+     image_url VARCHAR(30),
      PRIMARY KEY (id)
 );

@@ -1,24 +1,22 @@
 package ro.msg.learning.shop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.repository.ProductCategoryRepository;
 
+@RequiredArgsConstructor
 @Service
 public class ProductCategoryService {
 
-    @Autowired
-    private ProductCategoryRepository productCategoryRepository;
+    private final ProductCategoryRepository productCategoryRepository;
 
     public ProductCategory saveProductCategory(ProductCategory productCategory) {
-        if(!productCategoryRepository.existsByName(productCategory.getName())){
+        ProductCategory foundProductCategory = productCategoryRepository.findByName(productCategory.getName());
+        if (foundProductCategory == null) {
             productCategoryRepository.save(productCategory);
             return productCategory;
-        }
-        else
-            return productCategoryRepository.findByName(productCategory.getName());
-
-
+        } else
+            return foundProductCategory;
     }
 }

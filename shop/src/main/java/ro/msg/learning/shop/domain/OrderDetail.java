@@ -5,9 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ro.msg.learning.shop.domain.Keys.OrderDetailKey;
-
-import java.util.List;
+import ro.msg.learning.shop.domain.key.OrderDetailKey;
 
 @Table(name = "orderdetail")
 @Entity
@@ -15,24 +13,24 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDetail{
+public class OrderDetail {
     @EmbeddedId
     private OrderDetailKey id;
 
     @ManyToOne
     @MapsId("id")
-    @JoinColumn(name = "\"order\"")
+    @JoinColumn(name = "\"order_id\"")
     private Order order;
 
     @ManyToOne
     @MapsId("id")
-    @JoinColumn(name = "product")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name="shippedfrom")
+    @JoinColumn(name = "shipped_from")
     private Location shippedFrom;
 
-    @Column(name="quantity")
+    @Column(name = "quantity")
     private Integer quantity;
 }
