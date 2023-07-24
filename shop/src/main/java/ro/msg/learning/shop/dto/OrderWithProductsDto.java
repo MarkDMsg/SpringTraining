@@ -15,7 +15,7 @@ public class OrderWithProductsDto {
     private UUID id;
     private UUID customerId;
     private LocalDateTime createdAt;
-    private List<CreateOrderDto> productsAndQuantities;
+    private List<OrderDetailDto> productsAndQuantities;
     private String country;
     private String city;
     private String county;

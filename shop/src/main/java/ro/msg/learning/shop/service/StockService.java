@@ -65,7 +65,7 @@ public class StockService {
      * @return true if quantity substracted successfully, false otherwise
      */
     public boolean substractQuantityFromStock(Product product, Location location, int substractedQuantity) {
-        Stock currentStock = stockRepository.findByProductAndLocation(product, location);
+        Stock currentStock = stockRepository.findByProductAndLocation(product.getId(), location.getId());
         int currentQuantity = currentStock.getQuantity();
         if (currentQuantity >= substractedQuantity) {
             currentQuantity -= substractedQuantity;

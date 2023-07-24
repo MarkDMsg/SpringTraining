@@ -3,15 +3,15 @@ package ro.msg.learning.shop.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import ro.msg.learning.shop.domain.Location;
-import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.Stock;
 import ro.msg.learning.shop.domain.key.StockKey;
 
 import java.util.UUID;
 
 public interface StockRepository extends JpaRepository<Stock, StockKey> {
-    Stock findByProductAndLocation(Product product, Location location);
+
+    @Query(value = "SELECT * FROM Stock s WHERE s.product_id=?1 AND s.location_id=?2 ", nativeQuery = true)
+    Stock findByProductAndLocation(@Param("productID") UUID productID, @Param("locationID") UUID locationId);
 
     @Query(value = " SELECT s1.product_id AS product_id, s1.location_id AS location_id, s1.quantity AS quantity" +
             " FROM Stock s1 " +

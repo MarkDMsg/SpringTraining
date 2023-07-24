@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrderDto {
+public class OrderDetailDto {
     private UUID productId;
     private int quantity;
 }

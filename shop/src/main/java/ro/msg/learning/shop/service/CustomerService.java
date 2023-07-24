@@ -19,8 +19,7 @@ public class CustomerService {
 
     private final CustomerMapper customerMapper;
 
-    public CustomerDto createCustomer(CustomerDto customerDto) {
-        Customer customer = customerMapper.toCustomer(customerDto);
+    public CustomerDto createCustomer(Customer customer) {
         customerRepository.save(customer);
         return customerMapper.toCustomerDto(customer);
     }

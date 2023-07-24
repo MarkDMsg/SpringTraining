@@ -19,8 +19,7 @@ public class LocationService {
 
     private final LocationRepository locationRepository;
 
-    public LocationDto createLocation(LocationDto locationDto) {
-        Location location = locationMapper.toLocation(locationDto);
+    public LocationDto createLocation(Location location) {
         locationRepository.save(location);
         return locationMapper.toLocationDto(location);
     }

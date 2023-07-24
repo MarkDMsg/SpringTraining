@@ -22,7 +22,6 @@ public class OrderService {
 
     private final CustomerService customerService;
 
-
     public Order createOrder(Customer customer, LocalDateTime currentTimeStamp, Address address) {
         Order orderToBeAdded = Order.builder().customer(customer).createdAt(currentTimeStamp).address(address).build();
         orderRepository.save(orderToBeAdded);

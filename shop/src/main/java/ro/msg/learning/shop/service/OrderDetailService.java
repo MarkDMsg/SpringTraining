@@ -5,9 +5,7 @@ import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.*;
 import ro.msg.learning.shop.domain.key.OrderDetailKey;
-import ro.msg.learning.shop.dto.CreateOrderDto;
 import ro.msg.learning.shop.dto.OrderDto;
-import ro.msg.learning.shop.dto.OrderWithProductsDto;
 import ro.msg.learning.shop.mapper.OrderMapper;
 import ro.msg.learning.shop.repository.OrderDetailRepository;
 import ro.msg.learning.shop.service.configuration.OrderConfig;
@@ -16,7 +14,6 @@ import ro.msg.learning.shop.service.strategy.SingleLocationStrategy;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -36,19 +33,15 @@ public class OrderDetailService {
 
     private final OrderConfig orderConfig;
 
-    public OrderDto createOrderDetails(UUID customerId, List<Pair<Product, Integer>> productsWithQuantities, String country, String city, String county, String streetAddress) {
+    public OrderDto createOrderDetails(Customer customer, List<Pair<Product, Integer>> productsWithQuantities, Address address) {
         try {//TODO: Separate Custom Exceptions and verify if products exist
-            if (!customerService.verifyCustomerExists(customerId))
-                throw new RuntimeException();
 
             LocalDateTime currentTimeStamp = LocalDateTime.now();
-            Address address = new Address(country, city, county, streetAddress);
-            Customer customer = customerService.getCustomerAtId(customerId);
             Order createdOrder = orderService.createOrder(customer, currentTimeStamp, address);
 
             LocationStrategy locationStrategy = orderConfig.locationStrategy();
             if (locationStrategy.getClass().equals(SingleLocationStrategy.class)) {
-                Location bestSingleLocation = getBestSingleLocation(productsWithQuantities);
+                Location bestSingleLocation = locationStrategy.getLocationsByStrategy(productsWithQuantities).get(0);
                 for (Pair<Product, Integer> productAndQuantity : productsWithQuantities) {
                     OrderDetailKey createdOrderId = OrderDetailKey.builder().orderId(createdOrder.getId()).productId(productAndQuantity.a.getId()).build();
                     OrderDetail createdOrderDetail = OrderDetail.builder().id(createdOrderId).order(createdOrder).product(productAndQuantity.a).shippedFrom(bestSingleLocation).quantity(productAndQuantity.b).build();
@@ -80,12 +73,12 @@ public class OrderDetailService {
         return bestLocations.get(0);
     }
 
-    public List<Product> getAllProductsFromOrderDto(OrderWithProductsDto orderWithProductsDto) {
-        return orderWithProductsDto.getProductsAndQuantities().stream().map(element -> productService.getProductEntityById(element.getProductId())).toList();
+    public List<Product> getAllProductsFromOrderDto(List<Pair<Product, Integer>> productsWithQuantities) {
+        return productsWithQuantities.stream().map(element -> productService.getProductEntityById(element.a.getId())).toList();
     }
 
-    public List<Integer> getAllQuantitiesFromOrderDto(OrderWithProductsDto orderWithProductsDto) {
-        return orderWithProductsDto.getProductsAndQuantities().stream().map(CreateOrderDto::getQuantity).toList();
+    public List<Integer> getAllQuantitiesFromOrderDto(List<Pair<Product, Integer>> productsWithQuantities) {
+        return productsWithQuantities.stream().map(element -> element.b).toList();
     }
 
     public Product getProductFromOrderDto(String productName) {

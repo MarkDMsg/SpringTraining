@@ -17,7 +17,7 @@ public class StockController {
     private final StockService stockService;
 
     @PostMapping
-    public ResponseEntity<Void> createLocation(@RequestBody StockDto stockDto) {
+    public ResponseEntity<Void> createStock(@RequestBody StockDto stockDto) {
         stockService.createStock(stockDto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
