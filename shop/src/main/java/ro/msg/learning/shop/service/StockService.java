@@ -42,6 +42,18 @@ public class StockService {
         return returnedLocations;
     }
 
+    public List<Location> getLocationsMostAbundantQuantityForProduct(List<Pair<Product, Integer>> productsAndQuantities) {
+        List<Location> returnedLocations = new ArrayList<>();
+        for (Pair<Product, Integer> productAndQuantity : productsAndQuantities) {
+            Stock stock = stockRepository.findStockWithMaximumQuantityOnLocationForProduct(productAndQuantity.a.getId());
+            if (stock.getQuantity() < productAndQuantity.b) {
+                throw new RuntimeException("Not enough quantity for product");
+            }
+            returnedLocations.add(stock.getLocation());
+        }
+        return returnedLocations;
+    }
+
     public boolean existsProductWithQuantityAtLocation(Location location, Product product, Integer quantity) {
         List<Stock> stockList = stockRepository.findAll().stream()
                 .filter(stock -> stock.getQuantity() >= quantity && stock.getProduct() == product)
