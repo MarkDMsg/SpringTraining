@@ -1,4 +1,4 @@
-CREATE TABLE "order"(
+CREATE TABLE product_order(
      id UUID NOT NULL,
      customer_id UUID REFERENCES customer(id),
      created_at TIMESTAMP,

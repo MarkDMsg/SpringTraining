@@ -1,7 +1,7 @@
-CREATE TABLE orderdetail (
-     "order_id" UUID REFERENCES "order"(id),
+CREATE TABLE order_detail (
+     product_order_id UUID REFERENCES product_order(id),
      product_id UUID REFERENCES product(id),
      shipped_from UUID REFERENCES location(id),
      quantity INTEGER NOT NULL,
-     PRIMARY KEY ("order_id",product_id)
+     PRIMARY KEY (product_order_id,product_id)
 );

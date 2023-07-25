@@ -11,7 +11,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductWithCategoryDto {
+public class ProductDto {
     private UUID id;
     private String name;
     private String description;

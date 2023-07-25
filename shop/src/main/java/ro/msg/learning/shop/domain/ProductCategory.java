@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Table(name = "product_category")
@@ -28,5 +29,6 @@ public class ProductCategory extends EntityWithUUID {
     public ProductCategory(String name, String description) {
         this.name = name;
         this.description = description;
+        this.products = new HashSet<>();
     }
 }

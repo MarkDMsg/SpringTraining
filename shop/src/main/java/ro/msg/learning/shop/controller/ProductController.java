@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.msg.learning.shop.domain.ProductCategory;
-import ro.msg.learning.shop.dto.ProductWithCategoryDto;
+import ro.msg.learning.shop.dto.ProductDto;
 import ro.msg.learning.shop.service.ProductCategoryService;
 import ro.msg.learning.shop.service.ProductService;
 
@@ -22,17 +22,17 @@ public class ProductController {
     private final ProductCategoryService productCategoryService;
 
     @PostMapping
-    public ResponseEntity<ProductWithCategoryDto> createProduct(@RequestBody ProductWithCategoryDto productWithCategoryDto) {
-        ProductCategory productCategory = new ProductCategory(productWithCategoryDto.getCategoryName(), productWithCategoryDto.getCategoryDescription());
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
+        ProductCategory productCategory = new ProductCategory(productDto.getCategoryName(), productDto.getCategoryDescription());
         productCategory = productCategoryService.saveProductCategory(productCategory);
-        ProductWithCategoryDto returnedProductWithCategoryDto = productService.createProduct(productWithCategoryDto.getName(), productWithCategoryDto.getDescription(), productWithCategoryDto.getPrice(), productWithCategoryDto.getWeight(), productWithCategoryDto.getSupplier(), productWithCategoryDto.getImageUrl(), productCategory);
-        return new ResponseEntity<>(returnedProductWithCategoryDto, HttpStatus.CREATED);
+        ProductDto returnedProductDto = productService.createProduct(productDto.getName(), productDto.getDescription(), productDto.getPrice(), productDto.getWeight(), productDto.getSupplier(), productDto.getImageUrl(), productCategory);
+        return new ResponseEntity<>(returnedProductDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ProductWithCategoryDto> updateProduct(@PathVariable("id") UUID id, @RequestBody ProductWithCategoryDto newProduct) {
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") UUID id, @RequestBody ProductDto newProduct) {
         ProductCategory productCategory = new ProductCategory(newProduct.getCategoryName(), newProduct.getCategoryDescription());
-        ProductWithCategoryDto returnedProduct = productService.updateProduct(id, newProduct.getName(), newProduct.getDescription(), newProduct.getPrice(), newProduct.getWeight(), newProduct.getSupplier(), newProduct.getImageUrl(), productCategory);
+        ProductDto returnedProduct = productService.updateProduct(id, newProduct.getName(), newProduct.getDescription(), newProduct.getPrice(), newProduct.getWeight(), newProduct.getSupplier(), newProduct.getImageUrl(), productCategory);
         return new ResponseEntity<>(returnedProduct, HttpStatus.OK);
     }
 
@@ -43,14 +43,14 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductWithCategoryDto> getProductById(@PathVariable("id") UUID id) {
-        ProductWithCategoryDto returnedProduct = productService.getProductDtoById(id);
+    public ResponseEntity<ProductDto> getProductById(@PathVariable("id") UUID id) {
+        ProductDto returnedProduct = productService.getProductDtoById(id);
         return new ResponseEntity<>(returnedProduct, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductWithCategoryDto>> getAllProducts() {
-        List<ProductWithCategoryDto> returnedProducts = productService.getAllDtoProducts();
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        List<ProductDto> returnedProducts = productService.getAllDtoProducts();
         return new ResponseEntity<>(returnedProducts, HttpStatus.OK);
     }
 

@@ -3,10 +3,11 @@ package ro.msg.learning.shop.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import ro.msg.learning.shop.domain.Product;
 
+import java.util.Optional;
 import java.util.UUID;
 
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
-    Product findByName(String name);
+    Optional<Product> findByName(String name);
 }

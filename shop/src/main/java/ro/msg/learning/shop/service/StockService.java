@@ -1,7 +1,6 @@
 package ro.msg.learning.shop.service;
 
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.Location;
 import ro.msg.learning.shop.domain.Product;
@@ -10,8 +9,9 @@ import ro.msg.learning.shop.dto.StockDto;
 import ro.msg.learning.shop.mapper.StockMapper;
 import ro.msg.learning.shop.repository.StockRepository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -25,57 +25,33 @@ public class StockService {
 
     private final LocationService locationService;
 
-    public List<Location> getLocationsWithSufficientProductsQuantities(List<Pair<Product, Integer>> productsAndQuantities) {
-        boolean verifier;
-        List<Location> returnedLocations = new ArrayList<>();
-        List<Location> allStockLocations = stockRepository.findAll().stream().map(Stock::getLocation).distinct().toList();
-        for (Location location : allStockLocations) {
-            verifier = true;
-            for (Pair<Product, Integer> productAndQuantity : productsAndQuantities) {
-                if (!existsProductWithQuantityAtLocation(location, productAndQuantity.a, productAndQuantity.b))
-                    verifier = false;
-            }
-            if (verifier) {
-                returnedLocations.add(location);
-            }
-        }
-        return returnedLocations;
+    public List<Location> getAllStockLocations() {
+        return stockRepository.findAll().stream().map(Stock::getLocation).distinct().toList();
     }
 
-    public List<Location> getLocationsMostAbundantQuantityForProduct(List<Pair<Product, Integer>> productsAndQuantities) {
-        List<Location> returnedLocations = new ArrayList<>();
-        for (Pair<Product, Integer> productAndQuantity : productsAndQuantities) {
-            Stock stock = stockRepository.findStockWithMaximumQuantityOnLocationForProduct(productAndQuantity.a.getId());
-            if (stock.getQuantity() < productAndQuantity.b) {
-                throw new RuntimeException("Not enough quantity for product");
-            }
-            returnedLocations.add(stock.getLocation());
-        }
-        return returnedLocations;
-    }
-
-    public boolean existsProductWithQuantityAtLocation(Location location, Product product, Integer quantity) {
+    public boolean existsProductWithQuantityAtLocation(Location location, UUID productID, Integer quantity) {
+        Product product = productService.getProductEntityById(productID);
         List<Stock> stockList = stockRepository.findAll().stream()
                 .filter(stock -> stock.getQuantity() >= quantity && stock.getProduct() == product)
                 .toList();
         return !stockList.isEmpty();
     }
 
-    /***
-     * @return true if quantity substracted successfully, false otherwise
-     */
-    public boolean substractQuantityFromStock(Product product, Location location, int substractedQuantity) {
-        Stock currentStock = stockRepository.findByProductAndLocation(product.getId(), location.getId());
-        int currentQuantity = currentStock.getQuantity();
-        if (currentQuantity >= substractedQuantity) {
-            currentQuantity -= substractedQuantity;
-            currentStock.setQuantity(currentQuantity);
-            stockRepository.save(currentStock);
-            return true;
-        } else
-            return false;
-    }
 
+    public boolean substractQuantityFromStock(Product product, Location location, int substractedQuantity) {
+        Optional<Stock> currentStock = stockRepository.findByProductAndLocation(product.getId(), location.getId());
+        if (currentStock.isPresent()) {
+            int currentQuantity = currentStock.get().getQuantity();
+            if (currentQuantity >= substractedQuantity) {
+                currentQuantity -= substractedQuantity;
+                currentStock.get().setQuantity(currentQuantity);
+                stockRepository.save(currentStock.get());
+                return true;
+            } else
+                throw new RuntimeException("insufficient stocks");
+        }
+        return false;
+    }
 
     public void createStock(StockDto stockDto) {
         Location location = locationService.getLocationEntityById(stockDto.getLocationId());
@@ -88,4 +64,7 @@ public class StockService {
         return stockRepository.findAll().stream().map(stockMapper::toStockDto).toList();
     }
 
+    public List<Stock> findStockWithMaximumQuantityOnLocationForProduct(UUID uuid) {
+        return stockRepository.findStockWithMaximumQuantityOnLocationForProduct(uuid);
+    }
 }

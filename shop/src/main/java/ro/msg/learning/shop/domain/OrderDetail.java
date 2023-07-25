@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ro.msg.learning.shop.domain.key.OrderDetailKey;
 
-@Table(name = "orderdetail")
 @Entity
 @Data
 @Builder
@@ -19,8 +18,8 @@ public class OrderDetail {
 
     @ManyToOne
     @MapsId("id")
-    @JoinColumn(name = "\"order_id\"")
-    private Order order;
+    @JoinColumn(name = "product_order_id")
+    private ProductOrder productOrder;
 
     @ManyToOne
     @MapsId("id")

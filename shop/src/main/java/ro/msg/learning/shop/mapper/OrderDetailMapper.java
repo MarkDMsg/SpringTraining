@@ -8,10 +8,10 @@ import ro.msg.learning.shop.dto.OrderDetailDto;
 @Component
 public class OrderDetailMapper {
     public OrderDetailDto toOrderDetailDto(OrderDetail orderDetail) {
-        return new OrderDetailDto(orderDetail.getProduct().getId(), orderDetail.getQuantity());
+        return OrderDetailDto.builder().productId(orderDetail.getProduct().getId()).quantity(orderDetail.getQuantity()).productOrder(orderDetail.getProductOrder()).product(orderDetail.getProduct()).shippedFrom(orderDetail.getShippedFrom()).build();
     }
 
     public OrderDetail toOrderDetail(OrderDetailDto orderDetailDto) {
-        return new OrderDetail(OrderDetailKey.builder().orderId(null).productId(orderDetailDto.getProductId()).build(), null, null, null, orderDetailDto.getQuantity());
+        return OrderDetail.builder().id(OrderDetailKey.builder().productId(orderDetailDto.getProductId()).build()).quantity(orderDetailDto.getQuantity()).productOrder(orderDetailDto.getProductOrder()).product(orderDetailDto.getProduct()).shippedFrom(orderDetailDto.getShippedFrom()).build();
     }
 }

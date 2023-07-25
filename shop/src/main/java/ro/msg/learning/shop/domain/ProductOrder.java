@@ -1,5 +1,6 @@
 package ro.msg.learning.shop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "\"order\"")
-public class Order extends EntityWithUUID {
+public class ProductOrder extends EntityWithUUID {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
@@ -29,9 +29,10 @@ public class Order extends EntityWithUUID {
     private Address address;
 
     @OneToMany(
-            mappedBy = "order",
+            mappedBy = "productOrder",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<OrderDetail> orderDetailList;
 }

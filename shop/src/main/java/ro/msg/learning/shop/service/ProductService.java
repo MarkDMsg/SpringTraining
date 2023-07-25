@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.ProductCategory;
-import ro.msg.learning.shop.dto.ProductWithCategoryDto;
+import ro.msg.learning.shop.dto.ProductDto;
 import ro.msg.learning.shop.mapper.ProductMapper;
 import ro.msg.learning.shop.repository.ProductRepository;
 
@@ -23,18 +23,13 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-
-    public ProductWithCategoryDto createProduct(String name, String description, BigDecimal price, Double weight, String supplier, String imageUrl, ProductCategory productCategory) {
+    public ProductDto createProduct(String name, String description, BigDecimal price, Double weight, String supplier, String imageUrl, ProductCategory productCategory) {
         Product product = Product.builder().name(name).description(description).price(price).weight(weight).supplier(supplier).imageUrl(imageUrl).category(productCategory).build();
         productRepository.save(product);
         return productMapper.toProductWithCategoryDto(product, productCategory);
     }
 
-    public Product getProductEntityByName(String name) {
-        return productRepository.findByName(name);
-    }
-
-    public ProductWithCategoryDto updateProduct(UUID productId, String newName, String newDescription, BigDecimal newPrice, Double newWeight, String newSupplier, String newImageUrl, ProductCategory newCategory) {
+    public ProductDto updateProduct(UUID productId, String newName, String newDescription, BigDecimal newPrice, Double newWeight, String newSupplier, String newImageUrl, ProductCategory newCategory) {
         Optional<Product> newProduct = productRepository.findById(productId);
         if (newProduct.isPresent()) {
             newProduct.get().setName(newName);
@@ -62,19 +57,15 @@ public class ProductService {
         return product.orElse(null);
     }
 
-    public ProductWithCategoryDto getProductDtoById(UUID productId) {
+    public ProductDto getProductDtoById(UUID productId) {
         Optional<Product> product = productRepository.findById(productId);
         return product.map(value -> productMapper.toProductWithCategoryDto(value, value.getCategory())).orElse(null);
     }
 
-    public List<ProductWithCategoryDto> getAllDtoProducts() {
+    public List<ProductDto> getAllDtoProducts() {
 
         return productRepository.findAll().stream()
                 .map(element -> productMapper.toProductWithCategoryDto(element, element.getCategory())).toList();
-    }
-
-    public List<Product> getAllEntityProducts() {
-        return productRepository.findAll().stream().toList();
     }
 
     public boolean verifyProductExistence(UUID id) {
