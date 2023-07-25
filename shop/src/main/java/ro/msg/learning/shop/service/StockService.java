@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.Location;
 import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.Stock;
-import ro.msg.learning.shop.dto.StockDto;
-import ro.msg.learning.shop.mapper.StockMapper;
 import ro.msg.learning.shop.repository.StockRepository;
 
 import java.util.List;
@@ -19,20 +17,20 @@ public class StockService {
 
     private final StockRepository stockRepository;
 
-    private final StockMapper stockMapper;
-
     private final ProductService productService;
-
-    private final LocationService locationService;
 
     public List<Location> getAllStockLocations() {
         return stockRepository.findAll().stream().map(Stock::getLocation).distinct().toList();
     }
 
+    public List<Stock> getAllStocks() {
+        return stockRepository.findAll().stream().toList();
+    }
+
     public boolean existsProductWithQuantityAtLocation(Location location, UUID productID, Integer quantity) {
-        Product product = productService.getProductEntityById(productID);
+        Product product = productService.getProductById(productID);
         List<Stock> stockList = stockRepository.findAll().stream()
-                .filter(stock -> stock.getQuantity() >= quantity && stock.getProduct() == product)
+                .filter(stock -> stock.getQuantity() >= quantity && stock.getProduct() == product && stock.getLocation() == location)
                 .toList();
         return !stockList.isEmpty();
     }
@@ -53,15 +51,8 @@ public class StockService {
         return false;
     }
 
-    public void createStock(StockDto stockDto) {
-        Location location = locationService.getLocationEntityById(stockDto.getLocationId());
-        Product product = productService.getProductEntityById(stockDto.getProductId());
-        Stock stock = stockMapper.toStock(stockDto, product, location);
+    public void createStock(Stock stock) {
         stockRepository.save(stock);
-    }
-
-    public List<StockDto> getAllDtoStocks() {
-        return stockRepository.findAll().stream().map(stockMapper::toStockDto).toList();
     }
 
     public List<Stock> findStockWithMaximumQuantityOnLocationForProduct(UUID uuid) {

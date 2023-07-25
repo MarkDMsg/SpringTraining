@@ -24,12 +24,12 @@ public class LocationService {
         return locationMapper.toLocationDto(location);
     }
 
-    public Location getLocationEntityById(UUID id) {
+    public Location getLocationById(UUID id) {
         Optional<Location> location = locationRepository.findById(id);
         return location.orElse(null);
     }
 
-    public List<LocationDto> getAllDtoLocations() {
-        return locationRepository.findAll().stream().map(locationMapper::toLocationDto).toList();
+    public List<Location> getAllLocations() {
+        return locationRepository.findAll().stream().toList();
     }
 }

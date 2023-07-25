@@ -30,7 +30,7 @@ public class MostAbundantStrategy implements LocationStrategy {
         }
         int index = 0;
         for (OrderDetail orderDetail : orderDetailList) {
-            Product product = productService.getProductEntityById(orderDetail.getId().getProductId());
+            Product product = productService.getProductById(orderDetail.getId().getProductId());
             orderDetail.setShippedFrom(returnedLocations.get(index));
             orderDetail.setProduct(product);
             stockService.substractQuantityFromStock(product, returnedLocations.get(index), orderDetail.getQuantity());

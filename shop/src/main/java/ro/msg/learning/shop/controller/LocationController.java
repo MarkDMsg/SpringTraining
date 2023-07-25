@@ -29,7 +29,7 @@ public class LocationController {
 
     @GetMapping
     public ResponseEntity<List<LocationDto>> getAllLocations() {
-        List<LocationDto> returnedLocations = locationService.getAllDtoLocations();
+        List<LocationDto> returnedLocations = locationService.getAllLocations().stream().map(locationMapper::toLocationDto).toList();
         return new ResponseEntity<>(returnedLocations, HttpStatus.OK);
     }
 }

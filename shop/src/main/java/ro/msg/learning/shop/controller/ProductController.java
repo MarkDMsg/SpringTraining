@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ro.msg.learning.shop.domain.Product;
 import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.dto.ProductDto;
+import ro.msg.learning.shop.mapper.ProductMapper;
 import ro.msg.learning.shop.service.ProductCategoryService;
 import ro.msg.learning.shop.service.ProductService;
 
@@ -21,18 +23,21 @@ public class ProductController {
 
     private final ProductCategoryService productCategoryService;
 
+    private final ProductMapper productMapper;
+
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto) {
         ProductCategory productCategory = new ProductCategory(productDto.getCategoryName(), productDto.getCategoryDescription());
-        productCategory = productCategoryService.saveProductCategory(productCategory);
-        ProductDto returnedProductDto = productService.createProduct(productDto.getName(), productDto.getDescription(), productDto.getPrice(), productDto.getWeight(), productDto.getSupplier(), productDto.getImageUrl(), productCategory);
+        productCategoryService.saveProductCategory(productCategory);
+        Product createdProduct = productMapper.toProduct(productDto);
+        ProductDto returnedProductDto = productService.createProduct(createdProduct);
         return new ResponseEntity<>(returnedProductDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable("id") UUID id, @RequestBody ProductDto newProduct) {
-        ProductCategory productCategory = new ProductCategory(newProduct.getCategoryName(), newProduct.getCategoryDescription());
-        ProductDto returnedProduct = productService.updateProduct(id, newProduct.getName(), newProduct.getDescription(), newProduct.getPrice(), newProduct.getWeight(), newProduct.getSupplier(), newProduct.getImageUrl(), productCategory);
+        Product newProductEntity = productMapper.toProduct(newProduct);
+        ProductDto returnedProduct = productService.updateProduct(newProductEntity);
         return new ResponseEntity<>(returnedProduct, HttpStatus.OK);
     }
 
@@ -44,13 +49,14 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable("id") UUID id) {
-        ProductDto returnedProduct = productService.getProductDtoById(id);
+        Product product = productService.getProductById(id);
+        ProductDto returnedProduct = productMapper.toProductWithCategoryDto(product, product.getCategory());
         return new ResponseEntity<>(returnedProduct, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<ProductDto>> getAllProducts() {
-        List<ProductDto> returnedProducts = productService.getAllDtoProducts();
+        List<ProductDto> returnedProducts = productService.getAllProducts().stream().map(e -> productMapper.toProductWithCategoryDto(e, e.getCategory())).toList();
         return new ResponseEntity<>(returnedProducts, HttpStatus.OK);
     }
 

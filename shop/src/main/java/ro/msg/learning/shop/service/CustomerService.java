@@ -24,14 +24,12 @@ public class CustomerService {
         return customerMapper.toCustomerDto(customer);
     }
 
-    public boolean verifyCustomerExists(UUID id) {
+    public Customer getCustomer(UUID id) {
         Optional<Customer> customer = customerRepository.findById(id);
-        return customer.isPresent();
-    }
-
-    public Customer getCustomerAtId(UUID id) {
-        Optional<Customer> customer = customerRepository.findById(id);
-        return customer.orElse(null);
+        if (customer.isPresent()) {
+            return customer.get();
+        } else
+            throw new RuntimeException();
     }
 
     public List<CustomerDto> getAllCustomerDto() {

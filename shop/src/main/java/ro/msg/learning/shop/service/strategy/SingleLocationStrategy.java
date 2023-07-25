@@ -34,7 +34,7 @@ public class SingleLocationStrategy implements LocationStrategy {
         }
         Location chosenLocation = bestLocations.get(0);
         for (OrderDetail orderDetail : orderDetailList) {
-            Product product = productService.getProductEntityById(orderDetail.getId().getProductId());
+            Product product = productService.getProductById(orderDetail.getId().getProductId());
             orderDetail.setShippedFrom(chosenLocation);
             orderDetail.setProduct(product);
             stockService.substractQuantityFromStock(product, chosenLocation, orderDetail.getQuantity());

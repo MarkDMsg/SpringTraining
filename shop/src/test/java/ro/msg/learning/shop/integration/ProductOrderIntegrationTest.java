@@ -30,7 +30,6 @@ public class ProductOrderIntegrationTest {
     @Test
     public void testCreateOrderSuccessfully() throws Exception {
         String customerId = "8e936d7d-76d8-47fe-80be-0993e348f877";
-        //TODO:Delete Strings
         String requestBody = "{\n" +
                 "  \"orderDetailDtoList\": [\n" +
                 "    {\n" +
@@ -74,7 +73,7 @@ public class ProductOrderIntegrationTest {
 
     @Test
     public void testFailMissingStock() throws Exception {
-        String customerId = "2e3e6b34-ded1-4c6d-8052-384be4f8c5e6";
+        String customerId = "8e936d7d-76d8-47fe-80be-0993e348f877";
         //TODO:Delete Strings
         String requestBody = "{\n" +
                 "  \"orderDetailDtoList\": [\n" +
