@@ -35,8 +35,9 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.CREATED).body(returnedOrder);
 
         } catch (RuntimeException re) {
-            if (re.getMessage().equals("insufficient stocks"))
+            if (re.getMessage().equals("insufficient stocks")) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(re.getMessage());
+            }
         }
         return null;
     }
