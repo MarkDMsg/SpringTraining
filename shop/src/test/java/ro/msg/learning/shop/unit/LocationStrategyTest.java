@@ -1,6 +1,7 @@
 package ro.msg.learning.shop.unit;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,12 +44,16 @@ public class LocationStrategyTest {
     @InjectMocks
     private MostAbundantStrategy mostAbundantStrategy;
 
+    private Location location1, location2;
 
-    @Test
-    void testSingleLocationStrategy() {
+    private Product product1, product2;
 
-        StockService stockService = mock(StockService.class);
-        ProductService productService = mock(ProductService.class);
+    private Stock stock1, stock2, stock3;
+
+    @BeforeAll
+    void initializeTestValues() {
+        stockService = mock(StockService.class);
+        productService = mock(ProductService.class);
 
         singleLocationStrategy = new SingleLocationStrategy(stockService, productService);
 
@@ -74,6 +79,10 @@ public class LocationStrategyTest {
 
         StockKey stockKey3 = new StockKey(location2.getId(), product2.getId());
         Stock stock3 = new Stock(stockKey3, product2, location2, 20);
+    }
+
+    @Test
+    void testSingleLocationStrategy() {
 
         List<Location> returnedStockLocations = new ArrayList<>();
         returnedStockLocations.add(location1);
@@ -108,7 +117,6 @@ public class LocationStrategyTest {
         orderDetailList.add(orderDetail2);
 
         List<OrderDetail> result = singleLocationStrategy.getOrderDetailsByLocationStrategy(orderDetailList);
-
         Location location = result.get(0).getShippedFrom();
         String name = location.getName();
 
@@ -117,34 +125,6 @@ public class LocationStrategyTest {
 
     @Test
     void testMostAbundantStrategy() {
-
-        StockService stockService = mock(StockService.class);
-        ProductService productService = mock(ProductService.class);
-
-        mostAbundantStrategy = new MostAbundantStrategy(stockService, productService);
-
-        Address address1 = new Address("a11", "a12", "a13", "a14");
-        Location location1 = new Location("l1", address1);
-        location1.setId(UUID.randomUUID());
-        Location location2 = new Location("l2", address1);
-        location2.setId(UUID.randomUUID());
-
-        ProductCategory productCategory1 = new ProductCategory("basic", "d1");
-        productCategory1.setId(UUID.randomUUID());
-
-        Product product1 = new Product("p1", "d1", BigDecimal.ONE, 1.0, productCategory1, "supplier1", "imageUrl");
-        product1.setId(UUID.randomUUID());
-        Product product2 = new Product("p2", "d2", BigDecimal.ONE, 1.0, productCategory1, "supplier1", "imageUrl");
-        product2.setId(UUID.randomUUID());
-
-        StockKey stockKey1 = new StockKey(location1.getId(), product1.getId());
-        Stock stock1 = new Stock(stockKey1, product1, location1, 10);
-
-        StockKey stockKey2 = new StockKey(location1.getId(), product2.getId());
-        Stock stock2 = new Stock(stockKey2, product2, location1, 10);
-
-        StockKey stockKey3 = new StockKey(location2.getId(), product2.getId());
-        Stock stock3 = new Stock(stockKey3, product2, location2, 20);
 
         when(productService.getProductById(product1.getId())).thenReturn(product1);
         when(productService.getProductById(product2.getId())).thenReturn(product2);

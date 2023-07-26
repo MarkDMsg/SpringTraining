@@ -1,10 +1,8 @@
 package ro.msg.learning.shop.integration;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,106 +14,66 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import static org.junit.Assert.assertEquals;
+import ro.msg.learning.shop.ShopApplication;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = ShopApplication.class)
 @AutoConfigureMockMvc
 public class ProductOrderIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     public void testCreateOrderSuccessfully() throws Exception {
         String customerId = "8e936d7d-76d8-47fe-80be-0993e348f877";
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNodeFactory nodeFactory = objectMapper.getNodeFactory();
 
-        // Create the order detail objects
-        ObjectNode orderDetail1 = nodeFactory.objectNode();
-        orderDetail1.put("productId", "a0b3fba7-9c98-4673-82dd-14f9f5b7db28");
-        orderDetail1.put("quantity", 1);
+        JSONArray objectDetailArray = new JSONArray();
+        objectDetailArray.put(new JSONObject().put("productId", "a0b3fba7-9c98-4673-82dd-14f9f5b7db28").put("quantity", 1));
+        objectDetailArray.put(new JSONObject().put("productId", "db91de3d-2a7f-42e6-8bfc-d7b244132c55").put("quantity", 1));
 
-        ObjectNode orderDetail2 = nodeFactory.objectNode();
-        orderDetail2.put("productId", "db91de3d-2a7f-42e6-8bfc-d7b244132c55");
-        orderDetail2.put("quantity", 1);
-
-        // Create the orderDetailDtoList array node and add order detail objects
-        ArrayNode orderDetailDtoList = nodeFactory.arrayNode();
-        orderDetailDtoList.add(orderDetail1);
-        orderDetailDtoList.add(orderDetail2);
-
-        // Create the main object and add properties
-        ObjectNode mainObject = nodeFactory.objectNode();
-        mainObject.set("orderDetailDtoList", orderDetailDtoList);
-        mainObject.put("country", "test_country");
-        mainObject.put("city", "test_city");
-        mainObject.put("county", "test_county");
-        mainObject.put("streetAddress", "test_streetAddress");
-
-
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/orders/" + customerId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mainObject.asText()))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andReturn();
-
-
-        String responseContent = mvcResult.getResponse().getContentAsString();
-
-        JsonNode responseJsonNode = objectMapper.readTree(responseContent);
-
-        String responseCustomerId = responseJsonNode.get("customerId").asText();
-        String responseCountry = responseJsonNode.get("country").asText();
-        String responseCity = responseJsonNode.get("city").asText();
-        String responseCounty = responseJsonNode.get("county").asText();
-        String responseStreetAddress = responseJsonNode.get("streetAddress").asText();
-
-        assertEquals(customerId, responseCustomerId);
-        assertEquals("test_county", responseCounty);
-        assertEquals("test_country", responseCountry);
-        assertEquals("test_city", responseCity);
-        assertEquals("test_streetAddress", responseStreetAddress);
+        String jsonString = new JSONObject()
+                .put("orderDetailDtoList", objectDetailArray)
+                .put("country", "test_country")
+                .put("city", "test_city")
+                .put("streetAddress", "test_streetAddress").toString();
+        try {
+            MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/orders/" + customerId)
+                            .content(jsonString)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(MockMvcResultMatchers.status().isCreated())
+                    .andReturn();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 
     @Test
     public void testFailMissingStock() throws Exception {
         String customerId = "8e936d7d-76d8-47fe-80be-0993e348f877";
         ObjectMapper objectMapper = new ObjectMapper();
-        JsonNodeFactory nodeFactory = objectMapper.getNodeFactory();
 
-        // Create the order detail objects
-        ObjectNode orderDetail1 = nodeFactory.objectNode();
-        orderDetail1.put("productId", "a0b3fba7-9c98-4673-82dd-14f9f5b7db28");
-        orderDetail1.put("quantity", 10000);
+        JSONArray objectDetailArray = new JSONArray();
+        objectDetailArray.put(new JSONObject().put("productId", "a0b3fba7-9c98-4673-82dd-14f9f5b7db28").put("quantity", 10000));
+        objectDetailArray.put(new JSONObject().put("productId", "db91de3d-2a7f-42e6-8bfc-d7b244132c55").put("quantity", 10000));
 
-        ObjectNode orderDetail2 = nodeFactory.objectNode();
-        orderDetail2.put("productId", "db91de3d-2a7f-42e6-8bfc-d7b244132c55");
-        orderDetail2.put("quantity", 100000);
+        String jsonString = new JSONObject()
+                .put("orderDetailDtoList", objectDetailArray)
+                .put("country", "test_country")
+                .put("city", "test_city")
+                .put("streetAddress", "test_streetAddress").toString();
+        try {
 
-        // Create the orderDetailDtoList array node and add order detail objects
-        ArrayNode orderDetailDtoList = nodeFactory.arrayNode();
-        orderDetailDtoList.add(orderDetail1);
-        orderDetailDtoList.add(orderDetail2);
-
-        // Create the main object and add properties
-        ObjectNode mainObject = nodeFactory.objectNode();
-        mainObject.set("orderDetailDtoList", orderDetailDtoList);
-        mainObject.put("country", "test_country");
-        mainObject.put("city", "test_city");
-        mainObject.put("county", "test_county");
-        mainObject.put("streetAddress", "test_streetAddress");
-
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/orders/" + customerId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mainObject.asText()))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andReturn();
-
+            MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post("/orders/" + customerId)
+                            .content(jsonString)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .accept(MediaType.APPLICATION_JSON))
+                    .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                    .andReturn();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
     }
 }

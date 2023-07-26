@@ -15,20 +15,11 @@ import ro.msg.learning.shop.service.strategy.SingleLocationStrategy;
 @Configuration
 public class OrderConfig {
 
-    private enum StrategyType {
-        SINGLE_LOCATION,
-        MOST_ABUNDANT
-    }
-
+    private final StockService stockService;
+    private final StockRepository stockRepository;
+    private final ProductService productService;
     @Value("${location-strategy}")
     private StrategyType configuredStrategy;
-
-
-    private final StockService stockService;
-
-    private final StockRepository stockRepository;
-
-    private final ProductService productService;
 
     @Bean
     public LocationStrategy locationStrategy() {
@@ -38,5 +29,10 @@ public class OrderConfig {
             return new MostAbundantStrategy(stockService, productService);
         } else
             return null;
+    }
+
+    private enum StrategyType {
+        SINGLE_LOCATION,
+        MOST_ABUNDANT
     }
 }

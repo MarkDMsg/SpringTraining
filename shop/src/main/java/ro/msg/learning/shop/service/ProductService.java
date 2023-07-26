@@ -3,6 +3,7 @@ package ro.msg.learning.shop.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ro.msg.learning.shop.domain.Product;
+import ro.msg.learning.shop.domain.ProductCategory;
 import ro.msg.learning.shop.dto.ProductDto;
 import ro.msg.learning.shop.mapper.ProductMapper;
 import ro.msg.learning.shop.repository.ProductRepository;
@@ -19,7 +20,11 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final ProductCategoryService productCategoryService;
+
     public ProductDto createProduct(Product product) {
+        ProductCategory productCategory = ProductCategory.builder().name(product.getCategory().getName()).description(product.getCategory().getDescription()).build();
+        productCategoryService.saveProductCategory(productCategory);
         productRepository.save(product);
         return productMapper.toProductWithCategoryDto(product, product.getCategory());
     }
@@ -27,16 +32,10 @@ public class ProductService {
     public ProductDto updateProduct(Product newProduct) {
         Optional<Product> oldProduct = productRepository.findById(newProduct.getId());
         if (oldProduct.isPresent()) {
-            oldProduct.get().setName(newProduct.getName());
-            oldProduct.get().setDescription(newProduct.getDescription());
-            oldProduct.get().setPrice(newProduct.getPrice());
-            oldProduct.get().setWeight(newProduct.getWeight());
-            oldProduct.get().setSupplier(newProduct.getSupplier());
-            oldProduct.get().setImageUrl(newProduct.getImageUrl());
-            oldProduct.get().setCategory(newProduct.getCategory());
             productRepository.save(newProduct);
             return productMapper.toProductWithCategoryDto(newProduct, newProduct.getCategory());
-        } else return null;
+        }
+        return null;
     }
 
     public void deleteProductById(UUID productId) {
@@ -51,7 +50,6 @@ public class ProductService {
     }
 
     public List<Product> getAllProducts() {
-
         return productRepository.findAll().stream().toList();
     }
 

@@ -11,7 +11,7 @@ import ro.msg.learning.shop.service.LocationService;
 
 import java.util.List;
 
-@RequestMapping("/location")
+@RequestMapping("/locations")
 @RestController
 @RequiredArgsConstructor
 public class LocationController {
