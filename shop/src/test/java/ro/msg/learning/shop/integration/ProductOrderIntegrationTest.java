@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,11 +23,6 @@ public class ProductOrderIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @BeforeAll
-    public void inializeTestData() {
-
-    }
 
     @Test
     public void testCreateOrderSuccessfully() throws Exception {
